@@ -146,6 +146,9 @@ echo ""
 # ---------------------------------------------------------------------------
 info "Writing payload to: ${PAYLOAD_HOST_PATH}"
 
+# Ensure the target directory exists inside the rootfs
+mkdir -p "$(dirname "${PAYLOAD_HOST_PATH}")"
+
 cat > "${PAYLOAD_HOST_PATH}" << 'PAYLOAD_EOF'
 #!/bin/bash
 # ==========================================================================
