@@ -7,5 +7,5 @@
 
 انسخ الأمر التالي وانفذه مباشرة في واجهة **Termux** الأساسية:
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/walidrbh2000-maker/git/main/setup.sh)
+bash <(curl -sL https://raw.githubusercontent.com/walidrbh2000-maker/Ytb/main/setup.sh)
 ``` 
