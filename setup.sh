@@ -120,8 +120,29 @@ echo ""
 echo -e "${BOLD}━━━  Phase 2 of 3: Bootstrapping Debian rootfs  ━━━${RESET}"
 echo ""
 
+# ---------------------------------------------------------------------------
+# Integrity check: a valid Debian rootfs must contain /root, /etc, /usr.
+# If those are missing, the previous install was incomplete — wipe and redo.
+# ---------------------------------------------------------------------------
+ROOTFS_HEALTHY=true
 if [[ -d "${DEBIAN_ROOTFS}" ]]; then
-    ok "Debian rootfs already exists at '${DEBIAN_ROOTFS}' — skipping download."
+    for check_dir in root etc usr; do
+        if [[ ! -d "${DEBIAN_ROOTFS}/${check_dir}" ]]; then
+            ROOTFS_HEALTHY=false
+            warn "Rootfs integrity check failed: '${DEBIAN_ROOTFS}/${check_dir}' is missing."
+        fi
+    done
+fi
+
+if [[ "${ROOTFS_HEALTHY}" == false ]]; then
+    warn "Debian rootfs is incomplete/corrupted. Removing and reinstalling..."
+    proot-distro remove debian 2>/dev/null || rm -rf "${DEBIAN_ROOTFS}"
+    ok "Corrupted rootfs removed."
+    info "Installing fresh Debian rootfs (this downloads ~300 MB, please wait)..."
+    proot-distro install debian
+    ok "Debian rootfs reinstalled."
+elif [[ -d "${DEBIAN_ROOTFS}" ]]; then
+    ok "Debian rootfs exists and looks healthy — skipping download."
 else
     info "Installing Debian rootfs (this downloads ~300 MB, please wait)..."
     proot-distro install debian
@@ -129,9 +150,11 @@ else
 fi
 echo ""
 
-# Confirm the rootfs is present before writing the payload
+# Final confirmation
 [[ -d "${DEBIAN_ROOTFS}" ]] || \
     die "Debian rootfs missing at '${DEBIAN_ROOTFS}' after install. Aborting."
+[[ -d "${DEBIAN_ROOTFS}/root" ]] || \
+    die "Debian rootfs still missing /root after reinstall. Aborting."
 
 # =============================================================================
 # PHASE 3 — Generate and execute the gcloud payload inside Debian
