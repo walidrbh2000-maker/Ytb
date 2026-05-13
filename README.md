@@ -8,4 +8,4 @@
 انسخ الأمر التالي وانفذه مباشرة في واجهة **Termux** الأساسية:
 
 ```bash
-bash <(curl -sL [https://raw.githubusercontent.com/walidrbh2000-maker/ytb/main/setup.sh](https://raw.githubusercontent.com/walidrbh2000-maker/Ytb/main/setup.sh))
+curl -sL [https://raw.githubusercontent.com/walidrbh2000-maker/ytb/main/setup.sh](https://raw.githubusercontent.com/walidrbh2000-maker/ytb/main/setup.sh) | bash
