@@ -1,16 +1,11 @@
-# Creating the Markdown file for the step-by-step guide
-
-guide_content = """# دليل النشر المعماري لنظام Xray على Google Cloud Run
+# Xray Cloud Run Proxy - Termux Auto-Installer
 ## المستوى: Master Engineer
-### المشروع: تجاوز المحدودية عبر بنية Google السحابية
 
-هذا الدليل مخصص للتنفيذ المباشر عبر بيئة **Termux**. سننتقل من الصفر إلى امتلاك نفق بيانات خاص ومستقر تماماً.
+هذا المستودع مخصص لأتمتة تجهيز بيئة العمل داخل **Termux** للبدء في نشر خوادم **Xray** على بنية **Google Cloud Run** لتجاوز محدودية البيانات.
 
----
+### التثبيت السريع (Quick Start)
 
-## المرحلة الأولى: تهيئة البيئة (Bootstrap)
-ابدأ بلصق أمر الأتمتة في واجهة Termux الأساسية. هذا الأمر سيقوم ببناء نظام **Debian** كامل داخل هاتفك وتثبيت أدوات جوجل.
+انسخ الأمر التالي وانفذه مباشرة في واجهة **Termux** الأساسية:
 
 ```bash
-# استبدل الروابط بمعلومات مستودعك الفعلي على GitHub
-curl -sL [https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO_NAME/main/setup.sh](https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO_NAME/main/setup.sh) | bash
+bash <(curl -sL [https://raw.githubusercontent.com/walidrbh2000-maker/ytb/main/setup.sh](https://raw.githubusercontent.com/walidrbh2000-maker/Ytb/main/setup.sh))
