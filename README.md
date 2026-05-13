@@ -6,6 +6,6 @@
 ### التثبيت السريع (Quick Start)
 
 انسخ الأمر التالي وانفذه مباشرة في واجهة **Termux** الأساسية:
-
 ```bash
-curl -sL [https://raw.githubusercontent.com/walidrbh2000-maker/ytb/main/setup.sh](https://raw.githubusercontent.com/walidrbh2000-maker/ytb/main/setup.sh) | bash
+bash <(curl -sL https://raw.githubusercontent.com/walidrbh2000-maker/git/main/setup.sh)
+``` 
