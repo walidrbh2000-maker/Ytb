@@ -74,10 +74,26 @@ info "Termux environment confirmed. PREFIX=${PREFIX}"
 echo ""
 
 # -----------------------------------------------------------------------------
-# Paths — all derived from Termux's \$PREFIX for portability
+# Paths — all derived from Termux's $PREFIX for portability
 # -----------------------------------------------------------------------------
 DEBIAN_ROOTFS="${PREFIX}/var/lib/proot-distro/installed-rootfs/debian"
 PAYLOAD_HOST_PATH="${DEBIAN_ROOTFS}/root/install_gcp.sh"
+
+# =============================================================================
+# PHASE 0 — Fix any interrupted dpkg state and upgrade packages
+# =============================================================================
+echo -e "${BOLD}━━━  Phase 0 of 3: Repairing dpkg & upgrading packages  ━━━${RESET}"
+echo ""
+
+info "Running 'dpkg --configure -a' to fix any interrupted package state..."
+dpkg --configure -a 2>/dev/null || warn "dpkg --configure -a returned non-zero (may be harmless)."
+ok "dpkg state check complete."
+echo ""
+
+info "Upgrading existing Termux packages (resolves held-back dependencies)..."
+pkg upgrade -y 2>/dev/null || warn "pkg upgrade had warnings — continuing anyway."
+ok "Package upgrade complete."
+echo ""
 
 # =============================================================================
 # PHASE 1 — Install proot-distro in Termux
@@ -89,7 +105,11 @@ if command -v proot-distro &>/dev/null; then
     ok "proot-distro is already installed — skipping."
 else
     info "Installing proot-distro via pkg..."
-    pkg install -y proot-distro
+    pkg install -y proot-distro || {
+        warn "First attempt failed — trying with --fix-broken..."
+        pkg install -y --fix-broken
+        pkg install -y proot-distro
+    }
     ok "proot-distro installed."
 fi
 echo ""
@@ -153,8 +173,6 @@ info "Updating apt package index..."
 apt-get update -y
 
 info "Installing required packages..."
-# python3-distutils may be absent in Debian 12+ (merged into python3).
-# We attempt it and warn rather than hard-fail if unavailable.
 apt-get install -y \
     curl \
     python3 \
@@ -269,7 +287,6 @@ echo ""
 
 # ---------------------------------------------------------------------------
 # Execute the payload inside Debian via proot-distro
-# The -- separator passes everything after it as a command to the login shell
 # ---------------------------------------------------------------------------
 info "Launching payload inside Debian environment..."
 echo -e "${DIM}─────────────────────────── Debian output below ───────────────────────────${RESET}"
@@ -283,8 +300,6 @@ echo ""
 
 # =============================================================================
 # AUTOMATION STOP POINT
-# gcloud auth login requires an interactive OAuth browser flow and cannot be
-# scripted. We print a clear handoff message then drop into Debian.
 # =============================================================================
 echo ""
 echo -e "${GREEN}${BOLD}"
