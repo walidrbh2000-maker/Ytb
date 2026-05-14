@@ -130,14 +130,23 @@ check_termux_deps() {
     ok "Debian (proot-distro)"
 
     if ! command -v xray &>/dev/null; then
-        info "Installing xray..."
-        pkg install -y xray 2>/dev/null || {
-            warn "Trying TUR repository..."
-            pkg install -y tur-repo 2>/dev/null || true
-            pkg update -y; pkg install -y xray
-        }
+        info "Installing xray from GitHub Releases..."
+        local arch xray_zip xray_url xray_tmp
+        arch=$(uname -m)
+        case "$arch" in
+            aarch64) xray_zip="Xray-android-arm64-v8a.zip" ;;
+            x86_64)  xray_zip="Xray-android-x86_64.zip"   ;;
+            *) die "Unsupported arch: $arch" ;;
+        esac
+        xray_url="https://github.com/XTLS/Xray-core/releases/latest/download/${xray_zip}"
+        xray_tmp="$(mktemp -d)"
+        curl -fsSL --retry 3 "$xray_url" -o "${xray_tmp}/xray.zip" \
+            || die "Failed to download xray from GitHub."
+        unzip -q "${xray_tmp}/xray.zip" xray -d "${xray_tmp}/"
+        install -m 755 "${xray_tmp}/xray" "${_PFX}/bin/xray"
+        rm -rf "$xray_tmp"
     fi
-    ok "xray client"
+    ok "xray client ($(xray version 2>/dev/null | head -1 || echo "installed"))"
     nl
 }
 
