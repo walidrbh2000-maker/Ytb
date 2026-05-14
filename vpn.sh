@@ -28,7 +28,7 @@ set -euo pipefail
 
 # ── Meta ─────────────────────────────────────────────────────────────────────
 readonly VPN_VERSION="3.0.0"
-readonly GITHUB_RAW_URL="https://raw.githubusercontent.com/YOUR/REPO/main/vpn.sh"
+readonly GITHUB_RAW_URL="https://raw.githubusercontent.com/walidrbh2000-maker/Ytb/main/vpn.sh"
 
 # ── Termux guard ─────────────────────────────────────────────────────────────
 readonly _PFX="${PREFIX:-/data/data/com.termux/files/usr}"
