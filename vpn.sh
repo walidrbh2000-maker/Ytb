@@ -28,7 +28,7 @@ set -euo pipefail
 
 # ── Meta ─────────────────────────────────────────────────────────────────────
 readonly VPN_VERSION="3.0.0"
-readonly GITHUB_RAW_URL="https://raw.githubusercontent.com/walidrbh2000-maker/Ytb/main/vpn.sh"
+readonly GITHUB_RAW_URL="https://raw.githubusercontent.com/YOUR/REPO/main/vpn.sh"
 
 # ── Termux guard ─────────────────────────────────────────────────────────────
 readonly _PFX="${PREFIX:-/data/data/com.termux/files/usr}"
@@ -732,7 +732,19 @@ cmd_logs() {
 
 cmd_install() {
     local target="${_PFX}/bin/vpn"
-    cp "$(realpath "$0")" "$target"; chmod +x "$target"
+    local self; self="$(realpath "$0" 2>/dev/null || echo "")"
+
+    if [[ -f "$self" ]]; then
+        cp "$self" "$target"
+    elif [[ "$GITHUB_RAW_URL" != *"YOUR/REPO"* ]]; then
+        info "Downloading from GitHub..."
+        curl -fsSL "$GITHUB_RAW_URL" -o "$target" \
+            || die "Download failed."
+    else
+        die "Cannot install via pipe. Save first:\n  curl -sL <URL> -o vpn.sh \&\& bash vpn.sh install"
+    fi
+
+    chmod +x "$target"
     ok "Installed: $target"
     info "Use 'vpn <command>' from anywhere in Termux."
     nl
